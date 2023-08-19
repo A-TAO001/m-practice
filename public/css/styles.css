@@ -1,0 +1,156 @@
+*{
+  box-sizing: border-box;
+}
+html{
+  width: 100%;
+  margin: 0 auto;
+}
+body{
+  margin:0;
+}
+img{
+  max-width:100%;
+  max-height: 100%;
+}
+.box{
+  text-align: center;
+  margin: 0 10%;
+}
+.conteinar{
+  border:solid 2px #CCCCCC;
+  align-items: center;
+}
+.white{
+  background-color:#FFFFEE;
+}
+.light-blue{
+  background-color: #DDFFFF;
+}
+.blue{
+  background-color:rgb(158, 204, 247);
+}
+.red{
+  background-color: red;
+}
+.orange{
+  background-color:orange
+}
+.btn{
+  border:solid 1px;
+  width: 100px;
+  margin: 0 5px;
+}
+select,input[type="text"]{
+  width: 80%;
+}
+textarea{
+  width: 80%;
+  height: 50px;
+}
+.mini-form{
+  width:30%!important;
+  height:50px;
+}
+.form-control{
+  width: 40%!important;
+  padding: 10px 0;
+}
+.form-group{
+padding: 10px 0;
+}
+.mini-btn{
+  width: 80px;
+  margin: 0 5px;
+  border:solid 1px;
+}
+.pagination .page-item {
+  list-style-type: none;
+  display: inline-block;
+}
+
+.pagination .page-link {
+  border: none;
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+}
+/* top */
+.search{
+  padding-bottom:20px;
+}
+.menu {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+}
+.product-img {
+  width:100px;
+  height: 100px;
+  margin: 0 auto;
+}
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.product{
+  margin: 0;
+}
+.menu li {
+  margin:2%;
+  width: 10%;
+}
+.mini-form input[type="text"]{
+  width: 40%;
+}
+/* deta */
+.deta-conteinar{
+  display: flex;
+  border: solid 2px;
+  margin: 0 25%;
+}
+.left,.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.left ul,.right ul {
+  list-style: none;
+  padding:10px 0;
+  margin: 0 ;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.product-img img {
+  max-width: 100%;
+  height: auto;
+}
+.deta-menu li{
+  padding-top:10px;
+}
+.img_file{
+  height: 100px;
+}
+/* entry */
+.entry-menu li{
+  padding-top:10px;
+}
+/* update */
+.back_btn{
+border:solid 2px;
+color: black;
+text-decoration:none;
+}
+.update-menu li{
+  padding-top:10px;
+}
+/* auth */
+input[type="submit"],.auth_btn{
+  padding: 10px 40px;
+  margin: 20px 0;
+}
+.alert ul{
+  list-style: none;
+}
