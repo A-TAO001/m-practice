@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('product_name');
             $table->integer('price');
             $table->integer('stock');
-            $table->string('comment');
-            $table->string('img_path');
+            $table->string('comment')->nullable();
+            $table->string('img_path')->nullable();
             $table->timestamps();
             $table->foreign('company_id')->references('id')->on('companies');
         });

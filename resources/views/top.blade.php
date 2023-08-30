@@ -14,31 +14,38 @@
     <input type="submit" name="search" value="検索">
 </form>
 <div class="conteinar">
-  <ul class="menu">
-    <li>ID</li>
-    <li>商品画像</li>
-    <li>商品名</li>
-    <li>価格</li>
-    <li>在庫数</li>
-    <li>メーカー名</li>
-    <button id="entry-button" data-route="{{route('entry_view')}}" class="btn orange">新規登録</button>
-  </ul>
-    @foreach($products as $index => $product)
-    <ul class="menu product {{ $index % 2 === 0 ? 'white' : 'light-blue' }}" >
-    <li>{{$product->id}}</li>
-    <li class="product-img"><img src="{{asset($product->img_path)}}" alt=""></li>
-    <li>{{$product -> product_name}}</li>
-    <li>￥{{$product->price}}</li>
-    <li>{{$product->stock}}</li>
-    <li>{{$product->company->company_name}}</li>
-
-    <button data-route="{{ route('deta', ['id' => $product->id]) }}" class="mini-btn blue detail-button">詳細</button>
-    <button data-route="{{ route('delete', ['id' => $product->id]) }}" class="mini-btn red delete-button">削除</button>
-    </ul>
-    @endforeach
-  </div>
-  <nav class="pagination">
+  <table class="menu">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>商品画像</th>
+        <th>商品名</th>
+        <th>価格</th>
+        <th>在庫数</th>
+        <th>メーカー名</th>
+        <th><button id="entry-button" data-route="{{route('entry_view')}}" class="btn orange">新規登録</button></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($products as $index => $product)
+      <tr class="{{ $index % 2 === 0 ? 'white' : 'light-blue' }}">
+        <td>{{ $product->id }}</td>
+        <td class="product-img"><img src="{{ asset($product->img_path) }}" alt=""></td>
+        <td>{{ $product->product_name }}</td>
+        <td>￥{{ $product->price }}</td>
+        <td>{{ $product->stock }}</td>
+        <td>{{ $product->company->company_name }}</td>
+        <td>
+          <button data-route="{{ route('deta', ['id' => $product->id]) }}" class="mini-btn blue detail-button">詳細</button>
+          <button data-route="{{ route('delete', ['id' => $product->id]) }}" class="mini-btn red delete-button">削除</button>
+        </td>
+      </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+<nav class="pagination">
   {{ $products->links('vendor.pagination.default') }}
-  </nav>
+</nav>
 @endsection
 <!-- 一覧画面 -->

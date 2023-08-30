@@ -11,4 +11,10 @@ class Company extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    // entryページへ会社情報を送る
+    public static function getAllCompanies()
+    {
+        return Company::all();
+    }
 }

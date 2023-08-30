@@ -17,6 +17,8 @@ use App\Http\Controllers\Auth\LoginController;
 */
 
 Route::group(['middleware' => 'auth'], function() {
+
+Route::get('top', [TopController::class, 'index'])->name('top');
 Route::get('/', [TopController::class, 'index'])->name('top');
 
 Route::get('top/{id}', [ProductController::class, 'delete'])->name('delete');
@@ -31,6 +33,7 @@ Route::get('/deta/{id}', [ProductController::class, 'update_view'])->name('updat
 Route::put('/update/{id}', [ProductController::class, 'update_edit'])->name('update_edit');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+
 });
 
 Auth::routes();

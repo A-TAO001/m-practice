@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function index(){
 
         // conmpany情報取得
-        $companies = Company::all();
+        $companies = Company::getAllCompanies();
         // var_dump($companies);
         return view('entry',[
             'companies' => $companies
@@ -23,134 +23,119 @@ class ProductController extends Controller
     }
 
     // 商品登録
-    public function entry(Request $request){
-
+    public function entry(Request $request)
+    {
         $request->validate([
-            'img_path' => 'required',
             'product_name' => 'required',
             'company_id' => 'required',
             'price' => 'required',
             'stock' => 'required',
-            'comment' => 'required',
         ]);
 
-         // ディレクトリ名
-         $dir = 'img_path';
+        try {
+            DB::beginTransaction();
 
-         // アップロードされたファイル名を取得
-         $file_name = $request->file('img_path')->getClientOriginalName();
+            // Productモデルから商品登録を実行
 
-         // 取得したファイル名で保存
-         $request->file('img_path')->storeAs('public/' . $dir, $file_name);
+            Product::createProduct($request);
 
+            DB::commit();
 
-        $product = new Product();
-        $product->img_path = 'storage/' . $dir . '/' . $file_name;
-        $product->product_name = $request->product_name;
-        $product->company_id = $request->company_id;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->comment = $request->comment;
-        // データベースに保存
-        $product->save();
+            return redirect('entry');
 
-        return redirect('entry');
+            } catch (\Exception $e) {
+
+            DB::rollback();
+            }
     }
-
     // 詳細ページへ
-    public function deta(int $id){
-        $product = Product::find($id);
-        return view('deta',[
+    public function deta(int $id)
+    {
+        // Productモデルから商品情報を取得
+        $product = Product::getProductId($id);
+
+        return view('deta', [
             'product' => $product
         ]);
     }
+
+
     // 商品編集ページへ
-    public function update_view(int $id){
-        $product = Product::find($id);
-        $companies = Company::all();
-        return view('update',[
-            'product' => $product,
-            'companies' => $companies
-        ]);
+    public function update_view(int $id)
+    {
+        $data = Product::getProductUpdateId($id);
+        // dd($data);
+        return view('update', ['data' => $data]);
     }
 
     // 商品更新
-    public function update_edit(int $id,Request $request){
-
+    public function update_edit(int $id, Request $request)
+    {
         $request->validate([
-            'img_path' => 'required',
             'product_name' => 'required',
             'company_id' => 'required',
             'price' => 'required',
             'stock' => 'required',
-            'comment' => 'required',
         ]);
 
-        $product = Product::where('id',$id)->first();
-         // ディレクトリ名
-         $dir = 'img_path';
+        try {
+            DB::beginTransaction();
 
-         // アップロードされたファイル名を取得
-         $file_name = $request->file('img_path')->getClientOriginalName();
+            // Productモデルから商品更新を実行
+            $product = Product::updateProduct($id, $request);
 
-         // 取得したファイル名で保存
-         $request->file('img_path')->storeAs('public/' . $dir, $file_name);
+            DB::commit();
 
-        $product->img_path = 'storage/' . $dir . '/' . $file_name;
-        $product->product_name = $request->product_name;
-        $product->company_id = $request->company_id;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->comment = $request->comment;
-        // データベースに保存
-        $product->save();
+            return redirect()->route('deta', ['id' => $product->id]);
 
-        return redirect()->route('deta', ['id' => $product->id]);
+            } catch (\Exception $e) {
+
+            DB::rollback();
+            }
     }
 
     // 商品削除
     public function delete(int $id){
-        $product = Product::find($id);
 
-        // 画像ファイルのパスを取得
-        $imagePath = $product->img_path;
+        // // 画像ファイルのパスを取得
+        // $imagePath = $product->img_path;
 
-        // データベースから商品を削除
-        $product->delete();
+        // // データベースから商品を削除
+        // $product->delete();
 
-        // 画像ファイルを削除
-        if (Storage::exists($imagePath)) {
-            Storage::delete($imagePath);
-        }
+        // // 画像ファイルを削除
+        // if (Storage::exists($imagePath)) {
+        //     Storage::delete($imagePath);
+        // }
+        try{
+            DB::beginTransaction();
 
-    $product->delete();
-    return redirect('top');
+            Product::deleteProduct($id);
+
+            DB::commit();
+
+            return redirect('top');
+
+            }catch (\Exception $e){
+
+            DB::rollback();
+            }
     }
 
     // 商品検索
-    public function search(Request $request) {
-        $companies = Company::all();
+    public function search(Request $request)
+{
+    $companies = Company::all();
 
-        $textbox = $request->input('textbox');
-        $company_id = $request->input('company_id');
+    $textbox = $request->input('textbox');
+    $company_id = $request->input('company_id');
+    $perPage = 3;
 
-        $query = Product::query();
+    $products = Product::searchProducts($textbox, $company_id, $perPage);
 
-        if (!empty($textbox)) {
-            // フリーテキストで検索
-            $query->where('product_name', 'LIKE', '%' . $textbox . '%');
-        }
-
-        if (!empty($company_id)) {
-            // メーカーで検索
-            $query->where('company_id', $company_id);
-        }
-
-        $products = $query->paginate(3); // ページネーションを適用
-
-        return view('top', [
-            'products' => $products,
-            'companies' => $companies
-        ]);
-    }
+    return view('top', [
+        'products' => $products,
+        'companies' => $companies
+    ]);
+}
 }
