@@ -21,8 +21,11 @@ Route::group(['middleware' => 'auth'], function() {
 Route::get('top', [TopController::class, 'index'])->name('top');
 Route::get('/', [TopController::class, 'index'])->name('top');
 
-Route::get('top/{id}', [ProductController::class, 'delete'])->name('delete');
+Route::delete('top/{id}', [ProductController::class, 'delete'])->name('delete');
 Route::post('top/search', [ProductController::class, 'search'])->name('search');
+Route::post('top/price_search', [ProductController::class, 'pricesearch'])->name('price_search');
+Route::post('top/stock_search', [ProductController::class, 'stocksearch'])->name('stock_search');
+
 
 Route::get('entry', [ProductController::class, 'index'])->name('entry_view');
 Route::post('entry', [ProductController::class, 'entry'])->name('product_entry');

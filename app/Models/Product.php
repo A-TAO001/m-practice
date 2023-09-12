@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable; // 追加
+
 
 class Product extends Model
 {
+    use Sortable;  // 追加
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -103,4 +107,36 @@ class Product extends Model
         return $query->paginate($perPage);
     }
 
+    // 値段検索
+    public static function priceSearchProducts ($min_price,$max_price,$perPage = 3)
+    {
+        $query = self::query();
+
+        if(!empty($min_price)){
+            $query->where('price', '>=',$min_price);
+        }
+
+        if(!empty($max_price)){
+            $query->where('price', '<=',$max_price);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    
+    //在庫数検索
+    public static function stockSearchProducts ($min_stock,$max_stock,$perPage = 3)
+    {
+        $query = self::query();
+
+        if(!empty($min_stock)){
+            $query->where('stock', '>=',$min_stock);
+        }
+
+        if(!empty($max_stock)){
+            $query->where('stock', '<=',$max_stock);
+        }
+
+        return $query->paginate($perPage);
+    }
 }

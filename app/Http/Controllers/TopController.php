@@ -12,7 +12,7 @@ class TopController extends Controller
 {
     public function index() {
         $companies = Company::all();
-        $products = Product::orderBy('id', 'asc')->paginate(3);
+        $products = Product::sortable()->orderBy('id', 'asc')->paginate(3);
 
         // ビューに変数を渡して表示
         return view('top', [
@@ -21,3 +21,4 @@ class TopController extends Controller
         ]);
     }
 }
+

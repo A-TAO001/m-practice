@@ -1,4 +1,4 @@
-@extends('layout')
+-@extends('layout')
 
 @section('content')
 <h1>商品管理画面</h1>
@@ -11,8 +11,24 @@
             <option value="{{ $company->id }}">{{ $company->company_name }}</option>
         @endforeach
     </select>
-    <input type="submit" name="search" value="検索">
+    <button type="button" data-search-url="{{ route('search') }}" id="search-button">検索</button>
 </form>
+
+<form action="{{ route('price_search') }}" method="POST" class="price_search_form">
+    @csrf
+    <input type="text" name="min_price" placeholder="最安値" class="mini-form">
+    <input type="text" name="max_price" placeholder="最高値" class="mini-form">
+    <button type="button" id="price-search-button">検索</button>
+</form>
+
+
+<form action="{{route('stock_search')}}" method="POST" class="price_search_form">
+    @csrf
+    <input type="text" name="min_stock" placeholder="最小在庫" class="mini-form">
+    <input type="text" name="max_stock" placeholder="最大在庫" class="mini-form">
+    <button type="button" id="stock-search-button">検索</button>
+</form>
+
 <div class="conteinar">
   <table class="menu">
     <thead>
@@ -20,8 +36,8 @@
         <th>ID</th>
         <th>商品画像</th>
         <th>商品名</th>
-        <th>価格</th>
-        <th>在庫数</th>
+        <th>@sortablelink('price', '価格')</th>
+        <th>@sortablelink('stock', '在庫数')</th>
         <th>メーカー名</th>
         <th><button id="entry-button" data-route="{{route('entry_view')}}" class="btn orange">新規登録</button></th>
       </tr>
@@ -36,16 +52,23 @@
         <td>{{ $product->stock }}</td>
         <td>{{ $product->company->company_name }}</td>
         <td>
-          <button data-route="{{ route('deta', ['id' => $product->id]) }}" class="mini-btn blue detail-button">詳細</button>
-          <button data-route="{{ route('delete', ['id' => $product->id]) }}" class="mini-btn red delete-button">削除</button>
+        <button data-route="{{ route('deta', ['id' => $product->id]) }}" class="mini-btn blue deta-button">詳細</button>
+        <button data-route="{{ route('delete', ['id' => $product->id]) }}" class="mini-btn red delete-button">削除</button>
         </td>
       </tr>
       @endforeach
     </tbody>
   </table>
 </div>
+
 <nav class="pagination">
   {{ $products->links('vendor.pagination.default') }}
 </nav>
+<a href="{{route('top')}}">一覧へ</a>
 @endsection
+<script>
+    var imgPath = @json(asset($product->img_path));
+</script>
+
+
 <!-- 一覧画面 -->

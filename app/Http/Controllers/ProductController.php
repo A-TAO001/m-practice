@@ -94,48 +94,79 @@ class ProductController extends Controller
             }
     }
 
-    // 商品削除
-    public function delete(int $id){
+    
 
-        // // 画像ファイルのパスを取得
-        // $imagePath = $product->img_path;
+    // 商品検索
+    public function search(Request $request)
+    {
+        $companies = Company::all();
 
-        // // データベースから商品を削除
-        // $product->delete();
+        $textbox = $request->input('textbox');
+        $company_id = $request->input('company_id');
+        $perPage = 3;
 
-        // // 画像ファイルを削除
-        // if (Storage::exists($imagePath)) {
-        //     Storage::delete($imagePath);
-        // }
-        try{
+        $products = Product::searchProducts($textbox, $company_id, $perPage);
+
+        // JSONレスポンスを返す
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies
+        ]);
+    }
+
+    // 値段検索
+    public function pricesearch(Request $request)
+    {
+
+        $companies = Company::all();
+
+        $min_price = $request->input('min_price');
+        $max_price = $request->input('max_price');
+        $perPage = 3;
+
+        $products = Product::priceSearchProducts($min_price, $max_price, $perPage);
+
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies
+        ]);
+    }
+
+    // 在庫検索
+    public function stocksearch(Request $request)
+    {
+
+        $companies = Company::all();
+
+        $min_stock = $request->input('min_stock');
+        $max_stock = $request->input('max_stock');
+        $perPage = 3;
+
+        $products = Product::stockSearchProducts($min_stock, $max_stock, $perPage);
+
+        // JSONレスポンスを返す
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies
+        ]);
+    }
+
+    // 削除機能
+    public function delete(Request $request, $id) {
+
+        try {
             DB::beginTransaction();
 
             Product::deleteProduct($id);
 
             DB::commit();
 
-            return redirect('top');
+            return response()->json(['message' => '商品が削除されました']);
 
-            }catch (\Exception $e){
-
+        } catch (\Exception $e) {
             DB::rollback();
-            }
+            return response()->json(['message' => '商品の削除中にエラーが発生しました'], 500);
+        }
     }
 
-    // 商品検索
-    public function search(Request $request)
-{
-    $companies = Company::all();
-
-    $textbox = $request->input('textbox');
-    $company_id = $request->input('company_id');
-    $perPage = 3;
-
-    $products = Product::searchProducts($textbox, $company_id, $perPage);
-
-    return view('top', [
-        'products' => $products,
-        'companies' => $companies
-    ]);
-}
 }
