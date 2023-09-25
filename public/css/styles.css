@@ -40,9 +40,6 @@ img{
   width: 100px;
   margin: 0 5px;
 }
-select,input[type="text"]{
-  width: 80%;
-}
 textarea{
   width: 80%;
   height: 50px;
@@ -50,6 +47,13 @@ textarea{
 .mini-form{
   width:30%!important;
   height:50px;
+}
+minimini-firm{
+  width:15%!important;
+  height:30px;
+}
+select,input[type="text"]{
+  width: 80%;
 }
 .form-control{
   width: 40%!important;
@@ -80,7 +84,7 @@ padding: 10px 0;
 .search{
   padding-bottom:20px;
 }
-.menu {
+.table {
   width: 100%;
   padding: 0;
   margin: 0;
@@ -108,7 +112,7 @@ td{
 .product{
   margin: 0;
 }
-.menu li {
+.table li {
   margin:2%;
   width: 10%;
 }

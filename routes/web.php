@@ -18,13 +18,18 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::group(['middleware' => 'auth'], function() {
 
-Route::get('top', [TopController::class, 'index'])->name('top');
-Route::get('/', [TopController::class, 'index'])->name('top');
+Route::get('top', [ProductController::class, 'search'])->name('top');
+Route::get('/', [ProductController::class, 'search'])->name('top');
 
-Route::delete('top/{id}', [ProductController::class, 'delete'])->name('delete');
+Route::post('/delete/{id}',[ProductController::class, 'delete'])
+->name('delete');
+
 Route::post('top/search', [ProductController::class, 'search'])->name('search');
-Route::post('top/price_search', [ProductController::class, 'pricesearch'])->name('price_search');
-Route::post('top/stock_search', [ProductController::class, 'stocksearch'])->name('stock_search');
+Route::post('top/pssearch', [ProductController::class, 'pssearch'])->name('pssearch');
+Route::get('top/sort', [ProductController::class, 'sort'])->name('sort');
+
+
+// Route::post('top/stock_search', [ProductController::class, 'stocksearch'])->name('stock_search');
 
 
 Route::get('entry', [ProductController::class, 'index'])->name('entry_view');

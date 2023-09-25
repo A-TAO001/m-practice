@@ -10,6 +10,7 @@ use Kyslik\ColumnSortable\Sortable; // 追加
 class Product extends Model
 {
     use Sortable;  // 追加
+    protected $table = 'products';
 
     public function company()
     {
@@ -82,13 +83,15 @@ class Product extends Model
     }
 
     // 商品削除
-    public static function deleteProduct($id){
+    // public static function deleteProduct($id){
 
-        $product = Product::find($id);
-        if ($product) {
-            $product->delete();
-        }
-    }
+    //     $product = Product::find($id);
+    //     if ($product) {
+    //         $product->delete();
+    //     }
+    // }
+
+
     // 商品検索
     public static function searchProducts($textbox, $company_id, $perPage = 3)
     {
@@ -103,12 +106,11 @@ class Product extends Model
             // メーカーで検索
             $query->where('company_id', $company_id);
         }
-
         return $query->paginate($perPage);
     }
 
     // 値段検索
-    public static function priceSearchProducts ($min_price,$max_price,$perPage = 3)
+    public static function psSearchProducts ($min_price,$max_price,$min_stock,$max_stock,$perPage = 3)
     {
         $query = self::query();
 
@@ -120,15 +122,6 @@ class Product extends Model
             $query->where('price', '<=',$max_price);
         }
 
-        return $query->paginate($perPage);
-    }
-
-    
-    //在庫数検索
-    public static function stockSearchProducts ($min_stock,$max_stock,$perPage = 3)
-    {
-        $query = self::query();
-
         if(!empty($min_stock)){
             $query->where('stock', '>=',$min_stock);
         }
@@ -139,4 +132,5 @@ class Product extends Model
 
         return $query->paginate($perPage);
     }
+
 }

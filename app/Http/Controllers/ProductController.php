@@ -94,9 +94,41 @@ class ProductController extends Controller
             }
     }
 
-    
+    // ソート機能
+    public function sort(Request $request)
+    {
+        $sortableColumns = ['id', 'price', 'stock']; // ソート可能なカラムのリスト
+        $companies = Company::all();
 
-    // 商品検索
+        // リクエストからソートカラムとソート順を取得（デフォルトは'id'と'asc'）
+        $sortColumn = $request->input('sort', 'id');
+        $sortDirection = $request->input('direction', 'asc');
+
+        // ソートカラムが有効なものか確認
+        if (!in_array($sortColumn, $sortableColumns)) {
+            $sortColumn = 'id'; // デフォルトのソートカラム
+        }
+
+        // ソート順が正しい値であるか確認し、デフォルトは'asc'とする
+        if ($sortDirection !== 'asc' && $sortDirection !== 'desc') {
+            $sortDirection = 'asc';
+        }
+
+        // 商品データの取得とソート
+        $products = Product::orderBy($sortColumn, $sortDirection)->paginate(10); // 10件ずつページネーション
+
+        // ビューにデータを渡して表示
+        return view('top', [
+            'products' => $products,
+            'sortableColumns' => $sortableColumns,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
+            'companies' => $companies,
+        ]);
+    }
+
+
+ // 商品検索
     public function search(Request $request)
     {
         $companies = Company::all();
@@ -107,66 +139,72 @@ class ProductController extends Controller
 
         $products = Product::searchProducts($textbox, $company_id, $perPage);
 
-        // JSONレスポンスを返す
-        return response()->json([
+        return view('top',[
             'products' => $products,
-            'companies' => $companies
+            'companies' => $companies,
+            'perPage' => $perPage,
         ]);
     }
 
-    // 値段検索
-    public function pricesearch(Request $request)
+    // 値段・在庫検索
+    public function pssearch(Request $request)
     {
 
         $companies = Company::all();
 
         $min_price = $request->input('min_price');
         $max_price = $request->input('max_price');
-        $perPage = 3;
-
-        $products = Product::priceSearchProducts($min_price, $max_price, $perPage);
-
-        return response()->json([
-            'products' => $products,
-            'companies' => $companies
-        ]);
-    }
-
-    // 在庫検索
-    public function stocksearch(Request $request)
-    {
-
-        $companies = Company::all();
-
         $min_stock = $request->input('min_stock');
         $max_stock = $request->input('max_stock');
         $perPage = 3;
 
-        $products = Product::stockSearchProducts($min_stock, $max_stock, $perPage);
+        $products = Product::psSearchProducts($min_price, $max_price,$min_stock, $max_stock, $perPage);
 
-        // JSONレスポンスを返す
-        return response()->json([
+        return view('top',[
             'products' => $products,
-            'companies' => $companies
+            'companies' => $companies,
+            'perPage' => $perPage,
         ]);
     }
 
     // 削除機能
-    public function delete(Request $request, $id) {
+    // public function delete(Request $request, $id) {
 
-        try {
-            DB::beginTransaction();
+    //     try {
+    //         DB::beginTransaction();
 
-            Product::deleteProduct($id);
+    //         Product::deleteProduct($id);
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json(['message' => '商品が削除されました']);
+    //         return response()->json(['message' => '商品が削除されました']);
 
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['message' => '商品の削除中にエラーが発生しました'], 500);
-        }
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json(['message' => '商品の削除中にエラーが発生しました'], 500);
+    //     }
+    // }
+
+    // 削除機能
+    public function delete($id) {
+
+        Product::destroy($id);
+
+         return redirect()->route('top')->with('message', config('delete'));
+
     }
+
+    // 削除処理
+//     public function delete($id)
+// {
+//     $product = Product::find($id);
+
+//     if ($product) {
+//         $product->delete();
+//         return response()->json(['success' => true]);
+//     } else {
+//         return response()->json(['success' => false]);
+//     }
+// }
 
 }
