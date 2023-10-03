@@ -18,16 +18,18 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::group(['middleware' => 'auth'], function() {
 
-Route::get('top', [ProductController::class, 'search'])->name('top');
+Route::get('buy', [ProductController::class, 'buy'])->name('buy');
+Route::post('purchase', [ProductController::class,'purchase'])->name('purchase');
+
+Route::any('top', [ProductController::class, 'search'])->name('top');
 Route::get('/', [ProductController::class, 'search'])->name('top');
+
+Route::any('top/search', [ProductController::class, 'search'])->name('search');
+Route::any('top/pssearch', [ProductController::class, 'pssearch'])->name('pssearch');
+Route::get('top/sort', [ProductController::class, 'sort'])->name('sort');
 
 Route::post('/delete/{id}',[ProductController::class, 'delete'])
 ->name('delete');
-
-Route::post('top/search', [ProductController::class, 'search'])->name('search');
-Route::post('top/pssearch', [ProductController::class, 'pssearch'])->name('pssearch');
-Route::get('top/sort', [ProductController::class, 'sort'])->name('sort');
-
 
 // Route::post('top/stock_search', [ProductController::class, 'stocksearch'])->name('stock_search');
 

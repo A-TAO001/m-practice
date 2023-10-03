@@ -82,6 +82,12 @@ class Product extends Model
         return $product;
     }
 
+    // 商品購入
+    public static function buy(){
+
+        $product = Product::find($id);
+        
+    }
     // 商品削除
     // public static function deleteProduct($id){
 
@@ -93,7 +99,7 @@ class Product extends Model
 
 
     // 商品検索
-    public static function searchProducts($textbox, $company_id, $perPage = 3)
+    public static function searchProducts($textbox, $company_id, $perPage =10)
     {
         $query = self::query();
 
@@ -110,7 +116,7 @@ class Product extends Model
     }
 
     // 値段検索
-    public static function psSearchProducts ($min_price,$max_price,$min_stock,$max_stock,$perPage = 3)
+    public static function psSearchProducts ($min_price,$max_price,$min_stock,$max_stock,$perPage = 10)
     {
         $query = self::query();
 

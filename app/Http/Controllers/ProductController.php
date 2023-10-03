@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\Sale; 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -94,38 +96,81 @@ class ProductController extends Controller
             }
     }
 
-    // ソート機能
-    public function sort(Request $request)
-    {
-        $sortableColumns = ['id', 'price', 'stock']; // ソート可能なカラムのリスト
-        $companies = Company::all();
+    //購入ページ
+    public function buy(){
 
-        // リクエストからソートカラムとソート順を取得（デフォルトは'id'と'asc'）
-        $sortColumn = $request->input('sort', 'id');
-        $sortDirection = $request->input('direction', 'asc');
+        return view('buy');
 
-        // ソートカラムが有効なものか確認
-        if (!in_array($sortColumn, $sortableColumns)) {
-            $sortColumn = 'id'; // デフォルトのソートカラム
-        }
-
-        // ソート順が正しい値であるか確認し、デフォルトは'asc'とする
-        if ($sortDirection !== 'asc' && $sortDirection !== 'desc') {
-            $sortDirection = 'asc';
-        }
-
-        // 商品データの取得とソート
-        $products = Product::orderBy($sortColumn, $sortDirection)->paginate(10); // 10件ずつページネーション
-
-        // ビューにデータを渡して表示
-        return view('top', [
-            'products' => $products,
-            'sortableColumns' => $sortableColumns,
-            'sortColumn' => $sortColumn,
-            'sortDirection' => $sortDirection,
-            'companies' => $companies,
-        ]);
     }
+
+//     // 購入処理(練習用)
+//     public function purchase(Request $request)
+// {
+//     // フォームから送信された商品IDを取得
+//     $productID = $request->input('product_id');
+
+//     // $productIDを使用して購入処理を行う
+//     $product = Product::find($productID);
+
+//     if (!$product) {
+//         Log::error('商品が見つかりません');
+//         return response()->json(['message' => '商品が見つかりません'], 404);
+//     }
+
+//     // 商品の在庫を減らす
+//     if ($product->stock > 0) {
+//         $product->stock -= 1;
+//         $product->save();
+
+//          // 購入履歴をsalesテーブルに挿入
+//          $sale = new Sale();
+//          $sale->product_id = $productID;
+//          $sale->save();
+
+
+
+//         // 商品を購入した旨をコンソールに表示
+//         dd('商品を購入しました');
+//     } else {
+//         // 在庫切れの場合もコンソールに表示
+//         dd('在庫切れです');
+//     }
+//     return view('buy');
+// }
+
+
+    // // ソート機能
+    // public function sort(Request $request)
+    // {
+    //     $sortableColumns = ['id', 'price', 'stock']; // ソート可能なカラムのリスト
+    //     $companies = Company::all();
+
+    //     // リクエストからソートカラムとソート順を取得（デフォルトは'id'と'asc'）
+    //     $sortColumn = $request->input('sort', 'id');
+    //     $sortDirection = $request->input('direction', 'asc');
+
+    //     // ソートカラムが有効なものか確認
+    //     if (!in_array($sortColumn, $sortableColumns)) {
+    //         $sortColumn = 'id'; // デフォルトのソートカラム
+    //     }
+
+    //     // ソート順が正しい値であるか確認し、デフォルトは'asc'とする
+    //     if ($sortDirection !== 'asc' && $sortDirection !== 'desc') {
+    //         $sortDirection = 'asc';
+    //     }
+
+    //     // 商品データの取得とソート
+    //     $products = Product::sortable()->orderBy($sortColumn, $sortDirection)->paginate(10); // 10件ずつページネーション
+
+    //     // ビューにデータを渡して表示
+    //     return view('top', [
+    //         'products' => $products,
+    //         'sortableColumns' => $sortableColumns,
+    //         'sortColumn' => $sortColumn,
+    //         'sortDirection' => $sortDirection,
+    //         'companies' => $companies,
+    //     ]);
+    // }
 
 
  // 商品検索
@@ -135,7 +180,7 @@ class ProductController extends Controller
 
         $textbox = $request->input('textbox');
         $company_id = $request->input('company_id');
-        $perPage = 3;
+        $perPage = 10;
 
         $products = Product::searchProducts($textbox, $company_id, $perPage);
 
@@ -156,7 +201,7 @@ class ProductController extends Controller
         $max_price = $request->input('max_price');
         $min_stock = $request->input('min_stock');
         $max_stock = $request->input('max_stock');
-        $perPage = 3;
+        $perPage = 10;
 
         $products = Product::psSearchProducts($min_price, $max_price,$min_stock, $max_stock, $perPage);
 
@@ -167,23 +212,6 @@ class ProductController extends Controller
         ]);
     }
 
-    // 削除機能
-    // public function delete(Request $request, $id) {
-
-    //     try {
-    //         DB::beginTransaction();
-
-    //         Product::deleteProduct($id);
-
-    //         DB::commit();
-
-    //         return response()->json(['message' => '商品が削除されました']);
-
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return response()->json(['message' => '商品の削除中にエラーが発生しました'], 500);
-    //     }
-    // }
 
     // 削除機能
     public function delete($id) {
@@ -194,17 +222,5 @@ class ProductController extends Controller
 
     }
 
-    // 削除処理
-//     public function delete($id)
-// {
-//     $product = Product::find($id);
-
-//     if ($product) {
-//         $product->delete();
-//         return response()->json(['success' => true]);
-//     } else {
-//         return response()->json(['success' => false]);
-//     }
-// }
 
 }

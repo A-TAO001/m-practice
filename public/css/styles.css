@@ -48,9 +48,10 @@ textarea{
   width:30%!important;
   height:50px;
 }
-minimini-firm{
-  width:15%!important;
+.minimini-form{
+  width:30%!important;
   height:30px;
+  margin: 10px 0;
 }
 select,input[type="text"]{
   width: 80%;
@@ -78,6 +79,18 @@ padding: 10px 0;
   padding: 0.5rem 0.75rem;
 }
 /* top */
+.entry-btn{
+  margin-top:50px;
+}
+.search-conteinar{
+  display: flex;
+  margin: 0 20%;
+}
+.search-left,.search-right {
+  flex: 1;
+  flex-direction: column;
+  padding: 10px;
+}
 .sort{
   width: 50%;
 }
@@ -174,4 +187,8 @@ input[type="submit"],.auth_btn{
 }
 .nav-item{
   list-style: none;
+}
+/* ソート */
+.sorter-false {
+  background-image: none;
 }
