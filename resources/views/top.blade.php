@@ -11,23 +11,21 @@
             <option value="{{ $company->id }}">{{ $company->company_name }}</option>
         @endforeach
     </select>
-    <button type="button" data-search-url="{{ route('search') }}" id="search-button">検索</button>
-</form>
 
-<div class="search-conteinar">
-  <div class="search-left">
-    <form action="{{ route('pssearch') }}" method="POST" class="ps_search_form">
-        @csrf
+
+<div class="">
+  <div class="">
+    
         <input type="text" name="min_price" placeholder="最安値" class="minimini-form">~
         <input type="text" name="max_price" placeholder="最高値" class="minimini-form"><br>
         <input type="text" name="min_stock" placeholder="最小在庫" class="minimini-form">~
         <input type="text" name="max_stock" placeholder="最大在庫" class="minimini-form"><br>
-        <button type="button" id="ps-search-button">検索</button>
+        <button type="button" data-search-url="{{ route('search') }}" id="search-button">検索</button>
     </form>
   </div>
-  <div class="search-right"><button id="entry-button" data-route="{{route('entry_view')}}" class="btn entry-btn orange">新規登録</button>
-  </div>
 </div>
+<div class="entry-view"><button id="entry-button" data-route="{{route('entry_view')}}" class="btn entry-btn orange">新規登録</button>
+  </div>
 <div class="conteinar">
   <table id ="fav-table" class="table">
     <thead>

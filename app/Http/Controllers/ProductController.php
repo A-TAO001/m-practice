@@ -138,41 +138,6 @@ class ProductController extends Controller
 //     return view('buy');
 // }
 
-
-    // // ソート機能
-    // public function sort(Request $request)
-    // {
-    //     $sortableColumns = ['id', 'price', 'stock']; // ソート可能なカラムのリスト
-    //     $companies = Company::all();
-
-    //     // リクエストからソートカラムとソート順を取得（デフォルトは'id'と'asc'）
-    //     $sortColumn = $request->input('sort', 'id');
-    //     $sortDirection = $request->input('direction', 'asc');
-
-    //     // ソートカラムが有効なものか確認
-    //     if (!in_array($sortColumn, $sortableColumns)) {
-    //         $sortColumn = 'id'; // デフォルトのソートカラム
-    //     }
-
-    //     // ソート順が正しい値であるか確認し、デフォルトは'asc'とする
-    //     if ($sortDirection !== 'asc' && $sortDirection !== 'desc') {
-    //         $sortDirection = 'asc';
-    //     }
-
-    //     // 商品データの取得とソート
-    //     $products = Product::sortable()->orderBy($sortColumn, $sortDirection)->paginate(10); // 10件ずつページネーション
-
-    //     // ビューにデータを渡して表示
-    //     return view('top', [
-    //         'products' => $products,
-    //         'sortableColumns' => $sortableColumns,
-    //         'sortColumn' => $sortColumn,
-    //         'sortDirection' => $sortDirection,
-    //         'companies' => $companies,
-    //     ]);
-    // }
-
-
  // 商品検索
     public function search(Request $request)
     {
@@ -180,30 +145,13 @@ class ProductController extends Controller
 
         $textbox = $request->input('textbox');
         $company_id = $request->input('company_id');
-        $perPage = 10;
-
-        $products = Product::searchProducts($textbox, $company_id, $perPage);
-
-        return view('top',[
-            'products' => $products,
-            'companies' => $companies,
-            'perPage' => $perPage,
-        ]);
-    }
-
-    // 値段・在庫検索
-    public function pssearch(Request $request)
-    {
-
-        $companies = Company::all();
-
         $min_price = $request->input('min_price');
         $max_price = $request->input('max_price');
         $min_stock = $request->input('min_stock');
         $max_stock = $request->input('max_stock');
         $perPage = 10;
 
-        $products = Product::psSearchProducts($min_price, $max_price,$min_stock, $max_stock, $perPage);
+        $products = Product::searchProducts($textbox, $company_id,$min_price, $max_price,$min_stock, $max_stock,  $perPage);
 
         return view('top',[
             'products' => $products,
@@ -211,6 +159,27 @@ class ProductController extends Controller
             'perPage' => $perPage,
         ]);
     }
+
+    // // 値段・在庫検索
+    // public function pssearch(Request $request)
+    // {
+
+    //     $companies = Company::all();
+
+    //     $min_price = $request->input('min_price');
+    //     $max_price = $request->input('max_price');
+    //     $min_stock = $request->input('min_stock');
+    //     $max_stock = $request->input('max_stock');
+    //     $perPage = 10;
+
+    //     $products = Product::psSearchProducts($min_price, $max_price,$min_stock, $max_stock, $perPage);
+
+    //     return view('top',[
+    //         'products' => $products,
+    //         'companies' => $companies,
+    //         'perPage' => $perPage,
+    //     ]);
+    // }
 
 
     // 削除機能
